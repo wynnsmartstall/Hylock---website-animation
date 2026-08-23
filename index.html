@@ -69,6 +69,11 @@
     background:linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.65) 45%, transparent 100%);
     z-index:1;pointer-events:none;
   }
+  .scrub-stage::after{
+    content:"";position:absolute;bottom:0;left:0;right:0;height:16vh;
+    background:linear-gradient(to top, #000 0%, rgba(0,0,0,0.65) 45%, transparent 100%);
+    z-index:1;pointer-events:none;
+  }
   #seq{position:absolute;inset:0;width:100%;height:100%;display:block}
   .caption{
     position:absolute;left:6vw;bottom:9vh;max-width:min(420px,80vw);
@@ -243,8 +248,19 @@
     var io = new IntersectionObserver(function(entries){
       if(gateOff) return;
       var visible = entries[0].intersectionRatio >= 0.92;
+      var wasGated = document.body.classList.contains('gated');
       document.body.classList.toggle('gated', !visible);
-      if(visible) wheelsWhileGated = 0;
+      if(visible){
+        wheelsWhileGated = 0;
+        // On handoff, snap to the nearest boundary so leaked trackpad
+        // momentum can't start the animation at a random point.
+        if(wasGated){
+          var max = document.body.scrollHeight - window.innerHeight;
+          if(window.scrollY < max * 0.5){ window.scrollTo(0, 0); }
+          else { window.scrollTo(0, max); }
+          render();
+        }
+      }
     }, {threshold:[0, 0.5, 0.8, 0.92, 1]});
     io.observe(sentinel);
     // Guard: if the gate is engaged but the parent never brings us fully into
