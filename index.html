@@ -30,33 +30,30 @@
   }
   h1,h2{font-family:'Inter Tight','Inter',sans-serif;font-weight:600;letter-spacing:-0.02em}
 
-  /* ---------- intro ---------- */
-  .intro{
-    min-height:16vh;
-    display:flex;flex-direction:column;justify-content:center;align-items:center;
-    text-align:center;padding:0 24px;position:relative;
+  /* ---------- scroll cue (right side of animation) ---------- */
+  .scroll-cue{
+    position:absolute;right:6vw;top:50%;transform:translateY(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:12px;
+    font-size:12px;letter-spacing:0.2em;text-transform:uppercase;
+    color:var(--ink-dim);z-index:2;pointer-events:none;
+    opacity:1;transition:opacity .5s ease;
   }
-  .intro .brand{
-    font-size:12px;letter-spacing:0.28em;text-transform:uppercase;
-    color:var(--ink-dim);margin-bottom:28px;
+  .scroll-cue.hide{opacity:0}
+  .scroll-cue i{
+    width:1px;height:44px;display:block;
   }
-  .intro h1{font-size:clamp(40px,7vw,84px);line-height:1.04}
-  .intro h1 em{font-style:normal;color:var(--accent)}
-  .intro p{margin-top:20px;color:var(--ink-dim);max-width:34ch}
-  .scroll-hint{
-    position:absolute;bottom:20px;left:50%;transform:translateX(-50%);
-    font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-dim);
-    display:flex;flex-direction:column;align-items:center;gap:10px;
+  .scroll-cue i.top{
+    background:linear-gradient(to bottom, transparent, var(--ink-dim));
+    animation:drip 1.8s ease-in-out infinite;
   }
-  .scroll-hint::after{
-    content:"";width:1px;height:44px;
-    background:linear-gradient(var(--ink-dim),transparent);
+  .scroll-cue i.bot{
+    background:linear-gradient(to bottom, var(--ink-dim), transparent);
     animation:drip 1.8s ease-in-out infinite;
   }
   @keyframes drip{0%{transform:scaleY(0);transform-origin:top}
     50%{transform:scaleY(1);transform-origin:top}
     51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
-  @media (prefers-reduced-motion: reduce){.scroll-hint::after{animation:none}}
+  @media (prefers-reduced-motion: reduce){.scroll-cue i{animation:none}}
 
   /* ---------- scrub section ---------- */
   .scrub-wrap{height:530vh;position:relative}
@@ -103,13 +100,15 @@
 </head>
 <body>
 
-<section class="intro">
-  <div class="scroll-hint">Scroll</div>
-</section>
-
 <div class="scrub-wrap" id="scrubWrap">
   <div class="scrub-stage">
     <canvas id="seq"></canvas>
+
+    <div class="scroll-cue" id="scrollCue">
+      <i class="top"></i>
+      <span>Scroll Here</span>
+      <i class="bot"></i>
+    </div>
 
     <div class="caption" data-from="0.04" data-to="0.25">
       <div class="kicker">Inside the stall</div>
@@ -209,6 +208,8 @@
       currentFrame = frame;
       draw(images[frame]);
     }
+    var cue = document.getElementById('scrollCue');
+    if(cue) cue.classList.toggle('hide', p > 0.04);
     captions.forEach(function(c){
       var from = parseFloat(c.dataset.from), to = parseFloat(c.dataset.to);
       c.classList.toggle('on', p >= from && p <= to);
