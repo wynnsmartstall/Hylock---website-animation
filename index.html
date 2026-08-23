@@ -17,6 +17,9 @@
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:auto}
   body.loading,body.gated{overflow:hidden;height:100vh}
+  /* hide the scrollbar (scrolling itself is unaffected) */
+  html{scrollbar-width:none;-ms-overflow-style:none}
+  ::-webkit-scrollbar{width:0;height:0;display:none}
   body{
     background:var(--bg);
     color:var(--ink);
