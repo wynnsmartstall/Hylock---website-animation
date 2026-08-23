@@ -54,6 +54,19 @@
     50%{transform:scaleY(1);transform-origin:top}
     51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
   @media (prefers-reduced-motion: reduce){.scroll-cue i{animation:none}}
+  .scroll-cue.end{opacity:0}
+  .scroll-cue.end.show{opacity:1}
+  .scroll-cue.end i.top{
+    background:linear-gradient(to bottom, transparent, var(--ink-dim));
+    animation:dripup 1.8s ease-in-out infinite;
+  }
+  .scroll-cue.end i.bot{
+    background:linear-gradient(to bottom, var(--ink-dim), transparent);
+    animation:dripup 1.8s ease-in-out infinite;
+  }
+  @keyframes dripup{0%{transform:scaleY(0);transform-origin:bottom}
+    50%{transform:scaleY(1);transform-origin:bottom}
+    51%{transform-origin:top}100%{transform:scaleY(0);transform-origin:top}}
 
   /* ---------- scrub section ---------- */
   .scrub-wrap{height:530vh;position:relative}
@@ -105,6 +118,12 @@
     <canvas id="seq"></canvas>
 
     <div class="scroll-cue" id="scrollCue">
+      <i class="top"></i>
+      <span>Scroll Here</span>
+      <i class="bot"></i>
+    </div>
+
+    <div class="scroll-cue end" id="scrollCueEnd">
       <i class="top"></i>
       <span>Scroll Here</span>
       <i class="bot"></i>
@@ -210,6 +229,8 @@
     }
     var cue = document.getElementById('scrollCue');
     if(cue) cue.classList.toggle('hide', p > 0.04);
+    var cueEnd = document.getElementById('scrollCueEnd');
+    if(cueEnd) cueEnd.classList.toggle('show', p > 0.96);
     captions.forEach(function(c){
       var from = parseFloat(c.dataset.from), to = parseFloat(c.dataset.to);
       c.classList.toggle('on', p >= from && p <= to);
