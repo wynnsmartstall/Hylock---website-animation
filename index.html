@@ -58,7 +58,7 @@
   @media (prefers-reduced-motion: reduce){.scroll-hint::after{animation:none}}
 
   /* ---------- scrub section ---------- */
-  .scrub-wrap{height:460vh;position:relative}
+  .scrub-wrap{height:560vh;position:relative}
   .scrub-stage{
     position:sticky;top:0;height:100vh;overflow:hidden;
   }
@@ -105,25 +105,25 @@
   <div class="scrub-stage">
     <canvas id="seq"></canvas>
 
-    <div class="caption" data-from="0.05" data-to="0.29">
+    <div class="caption" data-from="0.04" data-to="0.24">
       <div class="kicker">Inside the stall</div>
       <h2>Hands-free by design.</h2>
       <p>The indicator invites a wave. Fully manual when wanted.</p>
     </div>
 
-    <div class="caption" data-from="0.33" data-to="0.55">
+    <div class="caption" data-from="0.27" data-to="0.62">
       <div class="kicker">One wave</div>
       <h2>Locked. Intentionally.</h2>
       <p>Precision sensing responds only to a deliberate wave. Never a passing motion.</p>
     </div>
 
-    <div class="caption" data-from="0.59" data-to="0.85">
+    <div class="caption" data-from="0.66" data-to="0.88">
       <div class="kicker">Wave again</div>
       <h2>Unlocks with Ease.</h2>
       <p>Door swings open for a touchless experience.</p>
     </div>
 
-    <div class="caption" data-from="0.89" data-to="1.00">
+    <div class="caption" data-from="0.91" data-to="1.00">
       <div class="kicker">Outside the stall</div>
       <h2>Occupied, at a glance.</h2>
       <p>Clear Status from the exterior. No awkward door knocking.</p>
@@ -151,6 +151,13 @@
   var loadBar = document.getElementById('loadBar');
   var captions = Array.prototype.slice.call(document.querySelectorAll('.caption'));
 
+  // Scroll sequence: the locking action (frames 53-88) is doubled so that
+  // section scrubs at half speed relative to the rest.
+  var SEQ = [];
+  for(var s = 1; s <= FRAME_COUNT; s++){
+    SEQ.push(s);
+    if(s >= 53 && s <= 88) SEQ.push(s);
+  }
   var images = new Array(FRAME_COUNT);
   var loaded = 0;
   var currentFrame = -1;
@@ -190,7 +197,8 @@
 
   function render(){
     var p = progress();
-    var frame = Math.min(FRAME_COUNT-1, Math.floor(p * FRAME_COUNT));
+    var idx = Math.min(SEQ.length-1, Math.floor(p * SEQ.length));
+    var frame = SEQ[idx] - 1;
     if(frame !== currentFrame && images[frame]){
       currentFrame = frame;
       draw(images[frame]);
