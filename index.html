@@ -248,7 +248,7 @@
     document.body.appendChild(sentinel);
     var io = new IntersectionObserver(function(entries){
       if(gateOff) return;
-      var visible = entries[0].intersectionRatio >= 0.99;
+      var visible = entries[0].intersectionRatio >= 0.95;
       var wasGated = document.body.classList.contains('gated');
       document.body.classList.toggle('gated', !visible);
       if(visible){
@@ -262,7 +262,7 @@
           render();
         }
       }
-    }, {threshold:[0, 0.5, 0.8, 0.99, 1]});
+    }, {threshold:[0, 0.5, 0.8, 0.95, 1]});
     io.observe(sentinel);
     // Guard: if the gate is engaged but the parent never brings us fully into
     // view (e.g. the iframe is taller than the screen), give up after ~25
